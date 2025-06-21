@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Oráculo Morgana</title>
+  <style>
+    body {
+      background-color: #000000;
+      color: #ffffff;
+      font-family: 'Georgia', serif;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      text-align: center;
+      padding: 20px;
+    }
+    h1 {
+      font-size: 2.5em;
+      margin-bottom: 10px;
+    }
+    #message {
+      margin-top: 30px;
+      font-size: 1.5em;
+      max-width: 800px;
+    }
+    button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 1em;
+      background-color: #ffffff;
+      color: #000000;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    button:hover {
+      background-color: #dddddd;
+    }
+  </style>
+</head>
+<body>
+  <h1>Oráculo Morgana</h1>
+  <p>Formulá tu pregunta en silencio. <br>Cuando estés lista, tocá el botón para recibir tu mensaje.</p>
+  <button onclick="mostrarMensaje()">Recibir mensaje</button>
+  <div id="message"></div>
+
+  <script>
+    const mensajes = [
+      { arcano: "El Loco", texto: "Saltá. El abismo es solo una ilusión cuando confías en tu alma." },
+      { arcano: "El Mago", texto: "Todo lo que necesitás ya está en tus manos. Usalo con intención." },
+      { arcano: "La Sacerdotisa", texto: "Callá afuera, escuchá adentro. La respuesta está en lo no dicho." },
+      { arcano: "La Emperatriz", texto: "Este es un tiempo fértil. Alimentá lo que querés ver florecer." },
+      { arcano: "El Emperador", texto: "Poné orden. Estás lista para trazar tus propias reglas." },
+      { arcano: "El Sumo Sacerdote", texto: "Buscá guía, pero no verdades absolutas. El rito te abre, no te encierra." },
+      { arcano: "Los Enamorados", texto: "La elección correcta es la que respeta tu deseo profundo." },
+      { arcano: "El Carro", texto: "Avanzá sin mirar atrás. Ya sabés a dónde ir." },
+      { arcano: "La Fuerza", texto: "No domines. Acariciá la fiera. Tu suavidad es poder." },
+      { arcano: "El Ermitaño", texto: "Retirate para ver claro. La soledad es un farol, no un castigo." },
+      { arcano: "La Rueda de la Fortuna", texto: "Lo que sube, baja. Lo que gira, transforma. Estás en medio del cambio." },
+      { arcano: "La Justicia", texto: "Sos medida y consecuencia. Elegí con claridad, sin disfraz." },
+      { arcano: "El Colgado", texto: "No luches. Invertí la mirada. El sacrificio revela lo oculto." },
+      { arcano: "La Muerte", texto: "Soltá. Lo que termina no es una pérdida, es una liberación." },
+      { arcano: "La Templanza", texto: "Uní lo que parece opuesto. En el medio está la medicina." },
+      { arcano: "El Diablo", texto: "¿De quién es la cadena que llevás? Tu deseo no es pecado, es poder." },
+      { arcano: "La Torre", texto: "Dejá que caiga. Lo verdadero no se rompe con los truenos." },
+      { arcano: "La Estrella", texto: "Pedí. El universo está escuchando." },
+      { arcano: "La Luna", texto: "No todo es lo que parece. Caminá lento bajo la niebla." },
+      { arcano: "El Sol", texto: "Celebrá. Tu luz no necesita permiso para brillar." },
+      { arcano: "El Juicio", texto: "Despertá. Ya sabés quién sos, solo faltaba recordarlo." },
+      { arcano: "El Mundo", texto: "Cerrá el círculo. Estás lista para la próxima danza." }
+    ];
+
+    function mostrarMensaje() {
+      const mensaje = mensajes[Math.floor(Math.random() * mensajes.length)];
+      document.getElementById("message").innerHTML = `<strong>${mensaje.arcano}:</strong> ${mensaje.texto}`;
+    }
+  </script>
+</body>
+</html>
