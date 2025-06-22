@@ -1,224 +1,509 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Oráculo Morgana</title>
-  <style>
-    body {
-      background-color: #000000;
-      color: white;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      text-align: center;
-      padding: 2rem;
-      user-select: none;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-start;
-      align-items: center;
-    }
-    h1 {
-      color: #9400D3; /* violeta brillante */
-      font-size: 3rem;
-      margin-bottom: 0.2rem;
-      text-shadow: 0 0 8px #9400D3;
-    }
-    p#intro {
-      font-size: 1.3rem;
-      margin-bottom: 2rem;
-      max-width: 400px;
-      line-height: 1.5;
-      color: #ddd;
-    }
-    button {
-      font-size: 1.2rem;
-      padding: 0.7rem 2.5rem;
-      margin: 0.5rem 0;
-      border: none;
-      border-radius: 8px;
-      font-weight: 600;
-      box-shadow: 0 0 8px rgba(0,0,0,0.3);
-      transition: filter 0.3s ease, box-shadow 0.3s ease;
-      cursor: pointer;
-      user-select: none;
-      width: 260px;
-    }
-    button:hover {
-      filter: brightness(1.4);
-      box-shadow: 0 0 15px #1E90FF; /* azul eléctrico */
-    }
-    #btnSiNo {
-      background-color: #3F2B8A; /* índigo oscuro */
-      color: white;
-      text-shadow: 0 0 5px #3F2B8A;
-    }
-    #btnTarot {
-      background-color: #5A3EA1; /* índigo medio */
-      color: white;
-      text-shadow: 0 0 5px #5A3EA1;
-    }
-    #btnUniverso {
-      background-color: #7B54C3; /* índigo claro */
-      color: white;
-      font-weight: 700;
-      text-shadow: 0 0 5px #7B54C3;
-    }
-    #resultado {
-      margin-top: 2rem;
-      font-size: 1.4rem;
-      min-height: 4rem;
-      max-width: 450px;
-      padding: 1rem 2rem;
-      border-radius: 10px;
-      background: rgba(255, 255, 255, 0.1);
-      box-shadow: 0 0 12px #9400D3;
-      user-select: text;
-      white-space: pre-line;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Oráculo Morgana</title>
+    <style>
+        body {
+            background-color: black;
+            color: white;
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+            overflow: hidden; /* Para ocultar el jumpscare inicialmente */
+            position: relative; /* Para posicionar el jumpscare */
+        }
+
+        h1 {
+            color: #8A2BE2; /* Violeta */
+            font-size: 3em;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .contact-button {
+            background-color: #551A8B; /* Un tono de violeta para el botón */
+            color: white;
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9em;
+            margin-bottom: 30px;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+
+        .contact-button:hover {
+            background-color: #6A0DAD; /* Un violeta más claro al pasar el ratón */
+        }
+
+        p {
+            font-size: 1.2em;
+            text-align: center;
+            margin-bottom: 40px;
+            line-height: 1.5;
+            max-width: 800px;
+        }
+
+        .button-container {
+            display: flex;
+            gap: 25px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .oracle-button {
+            padding: 20px 35px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.5em;
+            font-weight: bold;
+            cursor: pointer;
+            color: white;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            flex: 1; /* Para que los botones se adapten al tamaño */
+            min-width: 250px; /* Tamaño mínimo para los botones */
+            max-width: 300px; /* Tamaño máximo para los botones */
+        }
+
+        .oracle-button:hover {
+            background-color: #0000FF !important; /* Azul intenso */
+            transform: translateY(-3px);
+        }
+
+        /* Colores índigo para los botones */
+        #btn-si-no {
+            background-color: #4B0082; /* Índigo oscuro */
+        }
+
+        #btn-tarot {
+            background-color: #6A5ACD; /* Índigo medio */
+        }
+
+        #btn-universo {
+            background-color: #8A2BE2; /* Índigo violeta */
+        }
+
+        #response-display {
+            margin-top: 50px;
+            font-size: 1.6em;
+            font-weight: bold;
+            color: white; /* Color de texto blanco para las respuestas */
+            text-align: center;
+            max-width: 700px;
+            min-height: 50px; /* Para mantener espacio si no hay respuesta */
+            word-wrap: break-word; /* Romper palabras largas */
+        }
+
+        #jumpscare-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        #jumpscare-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        #jumpscare-image {
+            max-width: 90%;
+            max-height: 90%;
+            object-fit: contain;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5em;
+            }
+            p {
+                font-size: 1em;
+            }
+            .oracle-button {
+                font-size: 1.2em;
+                padding: 15px 25px;
+                min-width: unset;
+                width: 80%; /* Ocupar más ancho en móviles */
+            }
+            .button-container {
+                flex-direction: column;
+                align-items: center;
+            }
+            #response-display {
+                font-size: 1.2em;
+                margin-top: 30px;
+            }
+        }
+    </style>
 </head>
 <body>
+    <h1>ORÁCULO MORGANA</h1>
 
-  <h1>ORÁCULO MORGANA</h1>
-  <p id="intro">
-    Formula tu pregunta en silencio. Cuando estés lista, elige el tipo de respuesta que deseas recibir.
-  </p>
+    <a href="https://www.facebook.com/profile.php?id=61576645247486" target="_blank" class="contact-button">Contacta a Morgana</a>
 
-  <button id="btnSiNo">Respuestas Sí / No</button>
-  <button id="btnTarot">Mensaje del Tarot</button>
-  <button id="btnUniverso">Mensaje del Universo</button>
+    <p>Formula tu pregunta en silencio y luego escoge uno de los botones</p>
 
-  <div id="resultado">Aquí aparecerá tu mensaje mágico...</div>
+    <div class="button-container">
+        <button id="btn-si-no" class="oracle-button">Sí o No</button>
+        <button id="btn-tarot" class="oracle-button">Mensaje del Tarot</button>
+        <button id="btn-universo" class="oracle-button">Mensaje del Universo</button>
+    </div>
 
-  <script>
-    const mensajesSiNo = [
-      "Sí.",
-      "No.",
-      "Tal vez."
-    ];
+    <div id="response-display"></div>
 
-    const mensajesTarot = [
-      { nombre: "El Mago", texto: "El poder de la creación está en tus manos." },
-      { nombre: "La Sacerdotisa", texto: "Confía en tu intuición y sabiduría interior." },
-      { nombre: "La Emperatriz", texto: "La abundancia y fertilidad están presentes." },
-      { nombre: "El Emperador", texto: "Toma el control con firmeza y seguridad." },
-      { nombre: "El Hierofante", texto: "Busca guía en la tradición y el conocimiento sagrado." },
-      { nombre: "Los Enamorados", texto: "El amor y la unión son fuerzas poderosas en tu vida." },
-      { nombre: "El Carro", texto: "Avanza con determinación hacia tus objetivos." },
-      { nombre: "La Justicia", texto: "La verdad y el equilibrio prevalecen." },
-      { nombre: "El Ermitaño", texto: "Busca respuestas en la introspección y soledad." },
-      { nombre: "La Rueda de la Fortuna", texto: "Los ciclos cambian; prepárate para la transformación." },
-      { nombre: "La Fuerza", texto: "La valentía y la compasión te sostienen." },
-      { nombre: "El Colgado", texto: "Acepta nuevas perspectivas y paciencia." },
-      { nombre: "La Muerte", texto: "Un ciclo termina para que otro comience." },
-      { nombre: "La Templanza", texto: "Encuentra equilibrio y armonía en tu camino." },
-      { nombre: "El Diablo", texto: "Reconoce y libera las ataduras que te limitan." },
-      { nombre: "La Torre", texto: "Las estructuras viejas caen para dar paso a lo nuevo." },
-      { nombre: "La Estrella", texto: "La esperanza y la inspiración te guían." },
-      { nombre: "La Luna", texto: "Confía en tus sueños y emociones profundas." },
-      { nombre: "El Sol", texto: "La claridad y la alegría iluminan tu vida." },
-      { nombre: "El Juicio", texto: "Es tiempo de renacer y tomar decisiones conscientes." },
-      { nombre: "El Mundo", texto: "La realización y plenitud están al alcance." }
-    ];
+    <div id="jumpscare-overlay">
+        <img id="jumpscare-image" src="susto.jpg" alt="Jumpscare">
+        <audio id="jumpscare-audio" src="susto.mp3" preload="auto"></audio>
+    </div>
 
-    const mensajesUniverso = [
-      "La energía que das vuelve en formas inesperadas.",
-      "No busques afuera lo que ya vibra en tu interior.",
-      "Cada paso que das es un ritual sagrado.",
-      "La calma llega después de la tormenta invisible.",
-      "Confía en la magia de lo cotidiano.",
-      "Lo que parece final es solo un umbral disfrazado.",
-      "La luz siempre encuentra una grieta por donde entrar.",
-      "Escucha el susurro de tu alma, más allá del ruido.",
-      "Lo que hoy es incertidumbre será mañana sabiduría.",
-      "Tu poder reside en la autenticidad que abrazas.",
-      "Los cambios más grandes nacen de pequeños movimientos.",
-      "El tiempo es un tejido; tus decisiones, los hilos.",
-      "En el silencio, el universo te habla sin palabras.",
-      "No temas al vacío; es el espacio donde florece lo nuevo.",
-      "La verdad no siempre es cómoda, pero siempre es liberadora.",
-      "A veces perder es ganar en otra dimensión.",
-      "El amor propio es el conjuro más poderoso que posees.",
-      "El equilibrio nace del encuentro entre la luz y la sombra.",
-      "Suelta lo que pesa para elevar tu espíritu.",
-      "Cada cicatriz es un mapa de batallas ganadas.",
-      "No controles el viento, aprende a danzar con él.",
-      "La paciencia es el arte de esperar con intención.",
-      "Lo invisible sostiene todo lo que ves.",
-      "No todo lo que brilla es sol, pero siempre hay luz en la oscuridad.",
-      "Los sueños son puertas a realidades aún por descubrir.",
-      "Lo que temes es a menudo el portal a tu crecimiento.",
-      "Aceptar no es resignarse, es elegir la paz.",
-      "La intuición es la brújula de los valientes.",
-      "En cada encuentro, una enseñanza escondida.",
-      "Deja que tu esencia guíe tu camino, no el miedo.",
-      "El caos es el lienzo donde se pinta la creación.",
-      "El poder de la transformación está en tu voluntad.",
-      "No esperes señales; sé la señal.",
-      "La alegría es un idioma que todos entendemos.",
-      "Abre tu mente para cerrar viejas heridas.",
-      "La sabiduría se cultiva con preguntas, no con respuestas.",
-      "No huyas de la tormenta; atraviesala con coraje.",
-      "Cada día es una página en blanco para tu historia.",
-      "La gratitud abre puertas invisibles.",
-      "Lo que das sin miedo regresa multiplicado.",
-      "Aprende a escuchar lo que tu cuerpo quiere decir.",
-      "Los límites que ves son a veces ilusiones del ego.",
-      "El cambio verdadero empieza desde adentro.",
-      "La confianza es un acto de magia cotidiana.",
-      "La belleza reside en la imperfección.",
-      "No temas brillar, aunque la oscuridad te rodee.",
-      "Los secretos del universo están en la simplicidad.",
-      "El perdón libera más al que perdona que al perdonado.",
-      "Cada pensamiento es una semilla para tu realidad.",
-      "La vida no es un problema a resolver, sino un misterio a vivir.",
-      "La vulnerabilidad es la puerta a la autenticidad.",
-      "El amor es la fuerza que transforma cualquier sombra.",
-      "El presente es el único lugar donde la magia sucede.",
-      "No subestimes el poder de un suspiro profundo.",
-      "Tu alma conoce el camino aunque tu mente dude.",
-      "La verdadera libertad es aceptar lo que no podés cambiar.",
-      "El universo conspira a favor de los que actúan con fe.",
-      "Lo que parece un error, es a menudo una lección disfrazada.",
-      "Las heridas son semillas de empatía y fortaleza.",
-      "La esperanza es el faro en noches sin luna.",
-      "La creatividad es la chispa divina en acción.",
-      "No vivas para complacer; vive para expresarte.",
-      "El silencio a veces dice más que mil palabras.",
-      "La vida te devuelve lo que ofreces sin condiciones.",
-      "La honestidad contigo mismo es el primer acto de amor.",
-      "Aprende a fluir con el ritmo del cosmos.",
-      "Los sueños tienen un lenguaje que solo el alma entiende.",
-      "El verdadero poder nace de la humildad.",
-      "La abundancia empieza en la mente y en el corazón.",
-      "La transformación personal es el viaje más valiente.",
-      "Cada despedida abre espacio para un nuevo encuentro.",
-      "El respeto por uno mismo marca el camino a seguir.",
-      "No te aferres a lo que ya no sirve.",
-      "La paciencia revela la profundidad del tiempo.",
-      "El miedo es un maestro disfrazado de enemigo.",
-      "La magia está en lo cotidiano que elegís ver."
-    ];
+    <script>
+        const btnSiNo = document.getElementById('btn-si-no');
+        const btnTarot = document.getElementById('btn-tarot');
+        const btnUniverso = document.getElementById('btn-universo');
+        const responseDisplay = document.getElementById('response-display');
+        const jumpscareOverlay = document.getElementById('jumpscare-overlay');
+        const jumpscareAudio = document.getElementById('jumpscare-audio');
 
-    function mostrarMensaje(tipo) {
-      let mensaje;
-      if (tipo === 'siNo') {
-        mensaje = mensajesSiNo[Math.floor(Math.random() * mensajesSiNo.length)];
-        document.getElementById('resultado').textContent = mensaje;
-      } else if (tipo === 'tarot') {
-        const arcano = mensajesTarot[Math.floor(Math.random() * mensajesTarot.length)];
-        document.getElementById('resultado').innerHTML = `<strong>${arcano.nombre}</strong>: ${arcano.texto}`;
-      } else if (tipo === 'universo') {
-        mensaje = mensajesUniverso[Math.floor(Math.random() * mensajesUniverso.length)];
-        document.getElementById('resultado').textContent = mensaje;
-      }
-    }
+        let zafadaClickCounter = 0;
+        let jumpscareClickCounter = 0;
+        let lastZafadaIndex = -1; // Para evitar dos zafadas seguidas
 
-    document.getElementById('btnSiNo').addEventListener('click', () => mostrarMensaje('siNo'));
-    document.getElementById('btnTarot').addEventListener('click', () => mostrarMensaje('tarot'));
-    document.getElementById('btnUniverso').addEventListener('click', () => mostrarMensaje('universo'));
+        const respuestasSiNo = ["Sí", "No", "Tal vez"];
 
-  </script>
+        const respuestasTarot = [
+            "I. EL MAGO – “Todo lo que necesitás ya está en tus manos. Usalo con intención.”",
+            "II. LA SACERDOTISA – “Callá afuera, escuchá adentro. La respuesta está en lo no dicho.”",
+            "III. LA EMPERATRIZ – “Este es un tiempo fértil. Alimentá lo que querés ver florecer.”",
+            "IV. EL EMPERADOR – “Poné orden. Estás lista para trazar tus propias reglas.”",
+            "V. EL SUMO SACERDOTE – “Buscá guía, pero no verdades absolutas. El rito te abre, no te encierra.”",
+            "VI. LOS ENAMORADOS – “La elección correcta es la que respeta tu deseo profundo.”",
+            "VII. EL CARRO – “Avanzá sin mirar atrás. Ya sabés a dónde ir.”",
+            "VIII. LA FUERZA – “No domines. Acariciá la fiera. Tu suavidad es poder.”",
+            "IX. EL ERMITAÑO – “Retirate para ver claro. La soledad es un farol, no un castigo.”",
+            "X. LA RUEDA DE LA FORTUNA – “Lo que sube, baja. Lo que gira, transforma. Estás en medio del cambio.”",
+            "XI. LA JUSTICIA – “Sos medida y consecuencia. Elegí con claridad, sin disfraz.”",
+            "XII. EL COLGADO – “No luches. Invertí la mirada. El sacrificio revela lo oculto.”",
+            "XIII. LA MUERTE – “Soltá. Lo que termina no es una pérdida, es una liberación.”",
+            "XIV. LA TEMPLANZA – “Uní lo que parece opuesto. En el medio está la medicina.”",
+            "XV. EL DIABLO – “¿De quiénes la cadena que llevás? Tu deseo no es pecado, es poder.”",
+            "XVI. LA TORRE – “Dejá que caiga. Lo verdadero no se rompe con los truenos.”",
+            "XVII. LA ESTRELLA – “Pedí. El universo está escuchando.”",
+            "XVIII. LA LUNA – “No todo es lo que parece. Caminá lento bajo la niebla.”",
+            "XIX. EL SOL – “Celebrá. Tu luz no necesita permiso para brillar.”",
+            "XX. EL JUICIO – “Despertá. Ya sabés quién sos, solo faltaba recordarlo.”",
+            "XXI. EL MUNDO – “Cerrá el círculo. Estás lista para la próxima danza.”"
+        ];
+
+        const respuestasUniverso = [
+            "La energía que das vuelve en formas inesperadas.",
+            "No busques afuera lo que ya vibra en tu interior.",
+            "Cada paso que das es un ritual sagrado.",
+            "La calma llega después de la tormenta invisible.",
+            "Confía en la magia de lo cotidiano.",
+            "Lo que parece final es solo un umbral disfrazado.",
+            "La luz siempre encuentra una grieta por donde entrar.",
+            "Escucha el susurro de tu alma, más allá del ruido.",
+            "Lo que hoy es incertidumbre será mañana sabiduría.",
+            "Tu poder reside en la autenticidad que abrazas.",
+            "Los cambios más grandes nacen de pequeños movimientos.",
+            "El tiempo es un tejido; tus decisiones, los hilos.",
+            "En el silencio, el universo te habla sin palabras.",
+            "No temas al vacío; es el espacio donde florece lo nuevo.",
+            "La verdad no siempre es cómoda, pero siempre es liberadora.",
+            "A veces perder es ganar en otra dimensión.",
+            "El amor propio es el conjuro más poderoso que posees.",
+            "El equilibrio nace del encuentro entre la luz y la sombra.",
+            "Suelta lo que pesa para elevar tu espíritu.",
+            "Cada cicatriz es un mapa de batallas ganadas.",
+            "No controles el viento, aprende a danzar con él.",
+            "La paciencia es el arte de esperar con intención.",
+            "Lo invisible sostiene todo lo que ves.",
+            "No todo lo que brilla es sol, pero siempre hay luz en la oscuridad.",
+            "Los sueños son puertas a realidades aún por descubrir.",
+            "Lo que temes es a menudo el portal a tu crecimiento.",
+            "Aceptar no es resignarse, es elegir la paz.",
+            "La intuición es la brújula de los valientes.",
+            "En cada encuentro, una enseñanza escondida.",
+            "Deja que tu esencia guíe tu camino, no el miedo.",
+            "El caos es el lienzo donde se pinta la creación.",
+            "El poder de la transformación está en tu voluntad.",
+            "No esperes señales; sé la señal.",
+            "La alegría es un idioma que todos entendemos.",
+            "Abre tu mente para cerrar viejas heridas.",
+            "La sabiduría se cultiva con preguntas, no con respuestas.",
+            "No huyas de la tormenta; atraviesala con coraje.",
+            "Cada día es una página en blanco para tu historia",
+            "La gratitud abre puertas invisibles.",
+            "Lo que das sin miedo regresa multiplicado.",
+            "Aprende a escuchar lo que tu cuerpo quiere decir.",
+            "Los límites que ves son a veces ilusiones del ego.",
+            "El cambio verdadero empieza desde adentro.",
+            "La confianza es un acto de magia cotidiana.",
+            "La belleza reside en la imperfección.",
+            "No temas brillar, aunque la oscuridad te rodee.",
+            "Los secretos del universo están en la simplicidad.",
+            "El perdón libera más al que perdona que al perdonado.",
+            "Cada pensamiento es una semilla para tu realidad.",
+            "La vida no es un problema a resolver, sino un misterio a vivir.",
+            "La vulnerabilidad es la puerta a la autenticidad.",
+            "El amor es la fuerza que transforma cualquier sombra.",
+            "El presente es el único lugar donde la magia sucede.",
+            "No subestimes el poder de un suspiro profundo.",
+            "Tu alma conoce el camino aunque tu mente dude.",
+            "La verdadera libertad es aceptar lo que no podés cambiar.",
+            "El universo conspira a favor de los que actúan con fe.",
+            "Lo que parece un error, es a menudo una lección disfrazada.",
+            "Las heridas son semillas de empatía y fortaleza.",
+            "La esperanza es el faro en noches sin luna.",
+            "La creatividad es la chispa divina en acción.",
+            "No vivas para complacer; vive para expresarte.",
+            "El silencio a veces dice más que mil palabras.",
+            "La vida te devuelve lo que ofreces sin condiciones.",
+            "La honestidad contigo mismo es el primer acto de amor.",
+            "Aprende a fluir con el ritmo del cosmos.",
+            "Los sueños tienen un lenguaje que solo el alma entiende.",
+            "El verdadero poder nace de la humildad.",
+            "La abundancia empieza en la mente y en el corazón.",
+            "La transformación personal es el viaje más valiente.",
+            "Cada despedida abre espacio para un nuevo encuentro.",
+            "El respeto por uno mismo marca el camino a seguir.",
+            "No te aferres a lo que ya no sirve.",
+            "La paciencia revela la profundidad del tiempo.",
+            "El miedo es un maestro disfrazado de enemigo.",
+            "La magia está en lo cotidiano que elegís ver.",
+            "No busques la felicidad; créala desde adentro.",
+            "La fuerza interior se mide en tu capacidad de seguir.",
+            "Los pequeños actos de bondad son revoluciones silenciosas.",
+            "El amor propio sana las heridas invisibles.",
+            "La sabiduría ancestral vive en tu intuición.",
+            "La mente es un jardín; plantá pensamientos que florezcan.",
+            "La resiliencia es la alquimia del alma herida.",
+            "No te pierdas en el pasado; el presente es tu poder.",
+            "Lo que resistes persiste; lo que aceptas, transforma.",
+            "La verdad es un espejo que refleja tu esencia.",
+            "La confianza abre puertas donde la duda cierra ventanas.",
+            "La paz interior es la verdadera revolución.",
+            "No temas ser diferente; ahí reside tu magia.",
+            "El amor es un puente entre mundos.",
+            "La gratitud multiplica lo que tienes.",
+            "La vida es un ciclo de comienzos y finales.",
+            "En la oscuridad, la luz se vuelve más brillante.",
+            "No busques fuera lo que solo el corazón puede dar.",
+            "El universo habla en símbolos; aprende su idioma.",
+            "La humildad abre puertas que la arrogancia cierra.",
+            "Cada experiencia es un maestro disfrazado.",
+            "La alegría es el perfume del alma.",
+            "No juzgues tu camino por las sombras de otros.",
+            "La serenidad nace de aceptar lo que es.",
+            "El cambio constante es la única certeza.",
+            "El amor verdadero comienza en el respeto mutuo.",
+            "La intuición es la voz de tu ser profundo.",
+            "No temas a la soledad; es el taller del autoconocimiento.",
+            "La sabiduría se encuentra en el equilibrio entre mente y corazón.",
+            "Cada día es una oportunidad para renacer.",
+            "La belleza auténtica brota desde el interior.",
+            "La magia ocurre cuando dejas ir el control.",
+            "La compasión es la llave de la conexión.",
+            "La vida es un misterio para ser explorado, no un problema para resolver.",
+            "La paciencia cultiva frutos invisibles.",
+            "No busques fuera la validación que nace en ti.",
+            "El amor no se exige, se ofrece libremente.",
+            "La luz que buscas está en tu propia sombra.",
+            "Los límites son a veces puertas disfrazadas.",
+            "Cada dificultad es una invitación al crecimiento.",
+            "La humildad es la corona de la sabiduría.",
+            "La libertad empieza con la aceptación.",
+            "El perdón es un regalo que te das a ti mismo.",
+            "La esperanza es el latido del alma.",
+            "La verdad es liberadora, aunque a veces duela.",
+            "No temas mostrarte vulnerable; ahí reside la fortaleza.",
+            "La creatividad es el lenguaje del espíritu.",
+            "El amor propio es el primer paso para amar a otros.",
+            "La conexión con la naturaleza renueva el alma.",
+            "La serenidad es un refugio en tiempos turbulentos.",
+            "La alegría es un acto de rebeldía.",
+            "El silencio guarda las respuestas que buscas.",
+            "La mente es poderosa; elige en qué enfocar tu energía.",
+            "La transformación comienza con la voluntad de cambiar.",
+            "No te aferres a las heridas del pasado.",
+            "La gratitud abre la puerta a la abundancia.",
+            "El poder reside en la intención clara.",
+            "El amor es un campo que se cultiva día a día.",
+            "La verdad interna es más fuerte que cualquier máscara.",
+            "La paciencia revela la belleza oculta en el proceso.",
+            "No subestimes el poder de un pequeño acto de bondad.",
+            "La confianza en ti misma es tu mejor aliada.",
+            "El equilibrio es la danza entre opuestos.",
+            "La paz interior es el mayor tesoro.",
+            "La magia está en la aceptación del presente.",
+            "No temas explorar lo desconocido.",
+            "La intuición es la brújula del alma.",
+            "Cada experiencia, sea dulce o amarga, es una lección.",
+            "El amor transforma lo que toca.",
+            "La vida es un ciclo eterno de aprendizaje.",
+            "La humildad abre el camino hacia la sabiduría.",
+            "La gratitud transforma la percepción.",
+            "La fortaleza nace en la vulnerabilidad.",
+            "El perdón libera el corazón.",
+            "La serenidad surge cuando sueltas el control.",
+            "La alegría es un estado de ser, no una circunstancia.",
+            "La confianza se construye con pequeños actos.",
+            "La transformación es posible en cada instante.",
+            "El amor propio es un acto revolucionario.",
+            "La conexión profunda comienza contigo misma.",
+            "La paciencia es la virtud de los sabios.",
+            "El cambio es la única constante.",
+            "La magia reside en el momento presente.",
+            "La verdad interior es un faro en la oscuridad.",
+            "La sabiduría se cultiva con la experiencia.",
+            "La vulnerabilidad es la fuente de la auténtica conexión.",
+            "La gratitud multiplica lo que ya tienes.",
+            "La paz interior es un regalo que te das.",
+            "La creatividad es un canal para el espíritu.",
+            "No temas seguir tu propio camino.",
+            "La humildad es la llave que abre corazones.",
+            "La alegría es contagiosa y sanadora.",
+            "La paciencia te lleva a la meta deseada.",
+            "El amor transforma y eleva.",
+            "La confianza en ti misma es el primer paso para el éxito.",
+            "La serenidad se encuentra en la aceptación.",
+            "El misterio de la vida se revela a quien sabe esperar.",
+            "Cada respiración es una oportunidad para renacer.",
+            "La luz interior nunca se apaga, solo a veces se oculta.",
+            "La auténtica fuerza es la que nace del corazón.",
+            "El cambio es un aliado, no un enemigo.",
+            "La gratitud abre puertas que la lógica no puede.",
+            "La conexión con tu esencia es la fuente de tu poder.",
+            "La paciencia cultiva las semillas invisibles del éxito.",
+            "No temas a la sombra; ella también es parte de ti.",
+            "El amor propio es la raíz de toda sanación.",
+            "La sabiduría no se impone, se descubre.",
+            "El presente es un regalo que merece ser vivido.",
+            "La vulnerabilidad es la puerta a la libertad.",
+            "El universo conspira a favor de quienes actúan con fe.",
+            "La serenidad nace del desapego consciente.",
+            "La alegría es un canto que brota del alma.",
+            "La confianza abre caminos donde la duda cierra puertas.",
+            "El equilibrio es el arte de armonizar contrarios.",
+            "La magia reside en la intención clara y sincera.",
+            "La vida es un espejo que refleja tu esencia.",
+            "La esperanza es la luz que nunca se apaga.",
+            "El amor es un lenguaje universal que todos entienden.",
+            "La paciencia revela la profundidad del tiempo.",
+            "La fortaleza surge cuando aceptas tus límites.",
+            "La gratitud transforma la visión de la realidad.",
+            "La verdad interna es la brújula que guía tu camino.",
+            "La paz interior es el destino final de todo viaje."
+        ];
+
+        const frasesZafadas = [
+            "¿Otra vez preguntando lo mismo? Ya aburrís.",
+            "Ese ‘trabajo energético’ que hiciste... fue un desastre, querida.",
+            "Cualquier cosa te lo tomás como señal... andá a terapia.",
+            "¿Pensás que por poner sahumerios se te va a arreglar la vida?",
+            "Mucha espiritualidad pero no podés ni con tu ex.",
+            "Con esa actitud ni la luna te alumbra.",
+            "Dejá de stalkear a tu ex y hacele un amarre de una vez.",
+            "¿Querés que todo cambie? Empezá por cambiarte el pantalón, por lo menos.",
+            "Tu aura está como tu cuarto: desordenada y con olor raro.",
+            "Tu envidia vibra más fuerte que tus cristales, ojo con eso.",
+            "Sí, te hicieron un trabajo… pero fue merecido.",
+            "No necesitás magia, necesitás dignidad.",
+            "Querés que él te ame y vos ni sabés cocinar un huevo astral.",
+            "Andá a bañarte, estás hedionda. De paso te limpiás el karma.",
+            "A mí me importa un carajo tu problema.",
+            "El universo ya hizo su parte. Vos hacé algo por primera vez.",
+            "¿Tu propósito de vida? Ser la víctima, parece.",
+            "No te tienen envidia, simplemente no te soportan.",
+            "Ese cuarzo no está cargado… está harto.",
+            "Los astros te miran... y se hacen los boludos."
+        ];
+
+        function getRandomElement(arr) {
+            return arr[Math.floor(Math.random() * arr.length)];
+        }
+
+        function triggerJumpscare() {
+            jumpscareOverlay.classList.add('active');
+            jumpscareAudio.play();
+
+            setTimeout(() => {
+                jumpscareOverlay.classList.remove('active');
+                jumpscareAudio.pause();
+                jumpscareAudio.currentTime = 0; // Reiniciar el audio
+            }, 1500); // Duración del jumpscare en milisegundos
+        }
+
+        function handleButtonClick(type) {
+            zafadaClickCounter++;
+            jumpscareClickCounter++;
+            
+            let responseToDisplay = "";
+
+            // 1. Prioridad: Jumpscare
+            if (jumpscareClickCounter >= 180 && jumpscareClickCounter <= 200) {
+                // 50% de probabilidad para activar el jumpscare
+                if (Math.random() < 0.5) { 
+                    triggerJumpscare();
+                    jumpscareClickCounter = 0; // Reiniciar el contador de jumpscare
+                    responseDisplay.textContent = ''; // Limpiar la respuesta mientras está el jumpscare
+                    return; // Detener la ejecución para no mostrar ninguna otra respuesta
+                }
+            }
+
+            // 2. Siguiente Prioridad: Frases Zafadas
+            if (zafadaClickCounter >= 120 && zafadaClickCounter <= 150) {
+                // 20% de probabilidad de que aparezca una frase zafada
+                if (Math.random() < 0.2) { 
+                    let newZafadaIndex;
+                    do {
+                        newZafadaIndex = Math.floor(Math.random() * frasesZafadas.length);
+                    } while (newZafadaIndex === lastZafadaIndex); // Evitar dos zafadas seguidas
+
+                    responseToDisplay = frasesZafadas[newZafadaIndex];
+                    lastZafadaIndex = newZafadaIndex;
+                    zafadaClickCounter = 0; // Reiniciar el contador de zafadas
+                }
+            }
+
+            // 3. Si no fue Jumpscare ni Zafada, entonces una respuesta normal
+            if (responseToDisplay === "") { // Solo si no se ha asignado ya una respuesta (zafada)
+                lastZafadaIndex = -1; // Resetear el índice de la última zafada si no se mostró una
+                if (type === 'si-no') {
+                    responseToDisplay = getRandomElement(respuestasSiNo);
+                } else if (type === 'tarot') {
+                    responseToDisplay = getRandomElement(respuestasTarot);
+                } else if (type === 'universo') {
+                    responseToDisplay = getRandomElement(respuestasUniverso);
+                }
+            }
+            
+            responseDisplay.textContent = responseToDisplay; // Mostrar la respuesta final
+        }
+
+        // Asignar los event listeners a los botones
+        btnSiNo.addEventListener('click', () => handleButtonClick('si-no'));
+        btnTarot.addEventListener('click', () => handleButtonClick('tarot'));
+        btnUniverso.addEventListener('click', () => handleButtonClick('universo'));
+    </script>
 </body>
 </html>
