@@ -55,24 +55,25 @@
 
         .button-container {
             display: flex;
-            gap: 25px;
+            gap: 15px; /* Reducido el espacio entre botones */
             flex-wrap: wrap;
             justify-content: center;
+            margin-bottom: 30px; /* Añadido margen inferior para separar de la respuesta */
         }
 
         .oracle-button {
-            padding: 20px 35px;
+            padding: 15px 25px; /* Reducido el padding para achicar los botones */
             border: none;
             border-radius: 8px;
-            font-size: 1.5em;
+            font-size: 1.3em; /* Ajustado el tamaño de fuente inicial */
             font-weight: bold;
             cursor: pointer;
             color: white;
             transition: background-color 0.3s ease, transform 0.2s ease;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-            flex: 1; /* Para que los botones se adapten al tamaño */
-            min-width: 250px; /* Tamaño mínimo para los botones */
-            max-width: 300px; /* Tamaño máximo para los botones */
+            flex: 1; 
+            min-width: 200px; /* Reducido el tamaño mínimo para los botones */
+            max-width: 280px; /* Reducido el tamaño máximo para los botones */
         }
 
         .oracle-button:hover {
@@ -94,14 +95,15 @@
         }
 
         #response-display {
-            margin-top: 50px;
-            font-size: 1.6em;
+            margin-top: 20px; /* Ajustado el margen superior */
+            font-size: 1.4em; /* Ajustado el tamaño de fuente inicial */
             font-weight: bold;
             color: white; /* Color de texto blanco para las respuestas */
             text-align: center;
             max-width: 700px;
             min-height: 50px; /* Para mantener espacio si no hay respuesta */
             word-wrap: break-word; /* Romper palabras largas */
+            line-height: 1.4; /* Espaciado entre líneas para mejor lectura */
         }
 
         #jumpscare-overlay {
@@ -131,26 +133,57 @@
             object-fit: contain;
         }
 
+        /* MEDIA QUERIES PARA DISPOSITIVOS MÓVILES */
         @media (max-width: 768px) {
             h1 {
-                font-size: 2.5em;
+                font-size: 2.2em; /* Título un poco más pequeño en móviles */
+                margin-top: 20px;
+            }
+            .contact-button {
+                font-size: 0.8em;
+                padding: 6px 12px;
+                margin-bottom: 20px;
             }
             p {
-                font-size: 1em;
+                font-size: 1em; /* Leyenda más pequeña */
+                margin-bottom: 25px;
+                padding: 0 10px; /* Pequeño padding para que no toque los bordes */
             }
             .oracle-button {
-                font-size: 1.2em;
-                padding: 15px 25px;
-                min-width: unset;
-                width: 80%; /* Ocupar más ancho en móviles */
+                font-size: 1.1em; /* Botones más pequeños en móviles */
+                padding: 12px 20px;
+                width: 90%; /* Ocupar casi todo el ancho */
+                min-width: unset; /* Eliminar restricción de min-width */
+                max-width: 300px; /* Mantener un max-width razonable */
             }
             .button-container {
-                flex-direction: column;
+                flex-direction: column; /* Apilar los botones en móviles */
                 align-items: center;
+                gap: 12px; /* Reducido el espacio entre botones apilados */
+                margin-bottom: 25px;
             }
             #response-display {
-                font-size: 1.2em;
-                margin-top: 30px;
+                font-size: 1.1em; /* Respuesta más pequeña en móviles */
+                margin-top: 25px;
+                padding: 0 15px; /* Añadido padding para evitar que el texto toque los bordes */
+                min-height: 80px; /* Aumentar min-height para más espacio de respuesta */
+            }
+        }
+
+        /* Ajustes para pantallas aún más pequeñas (ej. iPhone 5/SE) */
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 2em;
+            }
+            p {
+                font-size: 0.9em;
+            }
+            .oracle-button {
+                font-size: 1em;
+                padding: 10px 18px;
+            }
+            #response-display {
+                font-size: 1em;
             }
         }
     </style>
@@ -185,7 +218,7 @@
 
         let zafadaClickCounter = 0;
         let jumpscareClickCounter = 0;
-        let lastZafadaIndex = -1; // Para evitar dos zafadas seguidas
+        let lastZafadaIndex = -1; 
 
         const respuestasSiNo = ["Sí", "No", "Tal vez"];
 
@@ -450,7 +483,7 @@
                 jumpscareOverlay.classList.remove('active');
                 jumpscareAudio.pause();
                 jumpscareAudio.currentTime = 0; // Reiniciar el audio
-            }, 1500); // Duración del jumpscare en milisegundos
+            }, 1500); 
         }
 
         function handleButtonClick(type) {
@@ -461,33 +494,31 @@
 
             // 1. Prioridad: Jumpscare
             if (jumpscareClickCounter >= 180 && jumpscareClickCounter <= 200) {
-                // 50% de probabilidad para activar el jumpscare
                 if (Math.random() < 0.5) { 
                     triggerJumpscare();
-                    jumpscareClickCounter = 0; // Reiniciar el contador de jumpscare
-                    responseDisplay.textContent = ''; // Limpiar la respuesta mientras está el jumpscare
-                    return; // Detener la ejecución para no mostrar ninguna otra respuesta
+                    jumpscareClickCounter = 0; 
+                    responseDisplay.textContent = ''; 
+                    return; 
                 }
             }
 
             // 2. Siguiente Prioridad: Frases Zafadas
             if (zafadaClickCounter >= 120 && zafadaClickCounter <= 150) {
-                // 20% de probabilidad de que aparezca una frase zafada
                 if (Math.random() < 0.2) { 
                     let newZafadaIndex;
                     do {
                         newZafadaIndex = Math.floor(Math.random() * frasesZafadas.length);
-                    } while (newZafadaIndex === lastZafadaIndex); // Evitar dos zafadas seguidas
+                    } while (newZafadaIndex === lastZafadaIndex); 
 
                     responseToDisplay = frasesZafadas[newZafadaIndex];
                     lastZafadaIndex = newZafadaIndex;
-                    zafadaClickCounter = 0; // Reiniciar el contador de zafadas
+                    zafadaClickCounter = 0; 
                 }
             }
 
             // 3. Si no fue Jumpscare ni Zafada, entonces una respuesta normal
-            if (responseToDisplay === "") { // Solo si no se ha asignado ya una respuesta (zafada)
-                lastZafadaIndex = -1; // Resetear el índice de la última zafada si no se mostró una
+            if (responseToDisplay === "") { 
+                lastZafadaIndex = -1; 
                 if (type === 'si-no') {
                     responseToDisplay = getRandomElement(respuestasSiNo);
                 } else if (type === 'tarot') {
@@ -497,10 +528,9 @@
                 }
             }
             
-            responseDisplay.textContent = responseToDisplay; // Mostrar la respuesta final
+            responseDisplay.textContent = responseToDisplay; 
         }
 
-        // Asignar los event listeners a los botones
         btnSiNo.addEventListener('click', () => handleButtonClick('si-no'));
         btnTarot.addEventListener('click', () => handleButtonClick('tarot'));
         btnUniverso.addEventListener('click', () => handleButtonClick('universo'));
